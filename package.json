@@ -1,0 +1,43 @@
+{
+  "name": "api-sysintelogis",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Carlos Farro",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon .",
+    "debug": "nodemon --inspect ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfarro09/apis-sysintelogis.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfarro09/apis-sysintelogis/issues"
+  },
+  "homepage": "https://github.com/cfarro09/apis-sysintelogis#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "@logdna/logger": "^2.5.0",
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "culqi-node": "^2.0.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ibm-cos-sdk": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
+    "pg": "^8.2.2",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.6.5",
+    "uuid": "^8.3.2",
+    "xlsx": "^0.17.2"
+  }
+}
