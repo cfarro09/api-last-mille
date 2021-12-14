@@ -25,7 +25,7 @@ const executeQuery = async (query, bind = {}) => {
     }).catch(err => getErrorSeq(err));
 }
 //no se puede usar bind y replace en el mismo query 
-exports.executesimpletransaction = async (method, data, permissions = false, replacements = undefined, isarray = false) => {
+exports.executesimpletransaction = async (method, data, permissions = false, replacements = undefined, isarray = false, transaction = undefined) => {
     let functionMethod = functionsbd[method];
     if (functionMethod) {
         if (permissions && functionMethod.module) {

@@ -129,39 +129,92 @@ exports.process = async (req, res) => {
     let current_value = '';
     let addressid = 0;
 
-    let result = await tf.executesimpletransaction("UFN_SEL_MASSIVE_LOAD", { massiveloadid });
-    if (!result instanceof Array || result.length === 0 || result[0].status !== 'PENDIENTE')
+    let massive_load = await tf.executesimpletransaction("UFN_SEL_MASSIVE_LOAD", { massiveloadid });
+    if (!massive_load instanceof Array || massive_load.length === 0 || massive_load[0].status !== 'PENDIENTE')
         return res.status(401).json({ code: errors.INVALID_MASSIVELOAD });
 
     const transaction = await sequelize.transaction();
     try {
         let details = await tf.executesimpletransaction('UFN_SEL_MASSIVE_LOAD_DETAIL', { massiveloadid })
+        const dataunificada = details.reduce((acc, item) => ({
+            ...acc,
+            [item.guide_number + item.seg_code + item.client_barcode]: !acc[item.guide_number + item.seg_code + item.client_barcode] ? {
+                ...item,
+                // client_barcode: item.item.client_barcode || generarcode(),
+                guide_number: item.guide_number || 'rpobando',
+                // total_weight
+                detail: [item]
+            } : {
+                ...acc[item.guide_number + item.seg_code + item.client_barcode],
+                detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, item]
+            }
+        }),{})
+
+        console.log("dataunificada", Object.values(dataunificada)[0]);
+
+
+
+
+
+
         await Promise.all(details.map(async (item) => {
             current_value = item.guide_number + item.seg_code + item.client_barcode
             console.log('current_value', current_value)
             console.log('prev_value', prev_value)
-            if (current_value != prev_value) {
-                let check_address = await tf.executesimpletransaction("SP_CHECK_ADDRESS", { address: item.client_address, district: item.district });
-                if (check_address.length === 0) {
-                    console.log("insertar address");
-                    const result = await sequelize.query(`
-                            INSERT INTO address(ubigeo, address, address_refernce, latitude, longitude, latitude_delivery, longitude_delivery, department, district, province, status, createby, changeby) 
-                            VALUES($ubigeo, $address, $address_refernce, $latitude, $longitude, $latitude_delivery, $longitude_delivery, $department, $district, $province, 'ACTIVO', $usr, $usr)
-                        `, {
-                        type: sequelize.QueryTypes.INSERT,
-                        bind: {...req.user, ...item},
-                        transaction
-                    }).catch(err => getErrorSeq(err));
-                } else {
-                    addressid = check_address[0].addressid;
-                }
-                console.log('check_address', check_address)
+
+            /*
+                2020, 123, tv
+                2020, 123, control
+                2021, 222, monitor
+            */
+           // 2021123
+           // 2021222
+            // checar la direccion
+            // insertar en guia
+            // insertar en tracking
+            // insertar en sku_product
+
+
+
+
+            // console.log('item',item);
+            // console.log('massive_load', massive_load)
+
+            if (current_value !== prev_value) {
+                let check_address = await tf.executesimpletransaction("SP_CHECK_ADDRESS", { ...item, address: item.client_address, address_refernce: item.client_address_reference, usr: req.user.usr },false, undefined,false,transaction);
+                // console.log('check_address', check_address.addressid)
+                
+                let query = `
+                    INSERT INTO guide (corpid, orgid, clientid, storeid, massiveloadid, addressid, guide_number, seg_code, alt_code1, alt_code2, client_date, client_barcode, client_date2, client_dni, client_name, client_phone1, client_phone2, client_phone3, client_email, status, createby, changeby, collect_time_range, collect_contact_name, payment_method, amount, seller_name, client_info)
+                    VALUES ($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, 'PENDIENTE', $usr, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info)
+                `
+                let guide = await sequelize.query(query, {
+                    type: sequelize.QueryTypes.INSERT,
+                    bind: {...massive_load[0], ...item, addressid: check_address.addressid, usr: req.user.usr},
+                    transaction
+                }).catch(err => {
+                    lasterror = getErrorSeq(err);
+                    throw 'error'
+                });
+
+                // console.log('guideid', guide[0])
+                await sequelize.query("INSERT INTO guide_tracking(guideid, status, motive) VALUES($guideid,'PROCESADO','Registro Automático.'),($guideid,'PENDIENTE','Registro Automático.')",{
+                    type: sequelize.QueryTypes.INSERT,
+                    bind: {guideid: guide[0]},
+                    transaction
+                }).catch(err => {
+                    lasterror = getErrorSeq(err);
+                    throw 'error'
+                });
             }
+            console.log('aca')
+            prev_value = current_value;
         }))
-        await transaction.commit()
+        // await transaction.commit()
         return res.json({ error: false, success: true, data: 'ok' });
     } catch (e) {
         console.log(e)
+        console.log('probar')
         await transaction.rollback();
         return res.status(lasterror.rescode).json(lasterror);
     }

@@ -51,7 +51,12 @@ module.exports = {
         protected: false
     },
     SP_CHECK_ADDRESS: {
-        query: "SELECT * from address where address = $address and district = $district limit 1",
+        query: "CALL SP_CHECK_ADDRESS($ubigeo, $address, $address_refernce, $department, $district, $province, $usr)",
+        module: "",
+        protected: false
+    },
+    SP_INS_ADDRESS: {
+        query: "CALL SP_INS_ADDRESS($ubigeo, $address, $address_refernce, $department, $district, $province, $usr)",
         module: "",
         protected: false
     },
