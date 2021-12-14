@@ -90,6 +90,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_VEHICLE_DRIVER: {
+        query: "CALL SP_VEHICLE_DRIVER($userid, $orgid)",
+        module: "",
+        protected: false
+    },
     
 
 
