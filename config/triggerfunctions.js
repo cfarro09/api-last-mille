@@ -4,7 +4,7 @@ const XLSX = require('xlsx');
 const { generatefilter, generateSort, errors, getErrorSeq, getErrorCode } = require('./helpers');
 
 const { QueryTypes } = require('sequelize');
-require('pg').defaults.parseInt8 = true;
+// require('pg').defaults.parseInt8 = true;
 
 var ibm = require('ibm-cos-sdk');
 
@@ -25,7 +25,7 @@ const executeQuery = async (query, bind = {}) => {
     }).catch(err => getErrorSeq(err));
 }
 //no se puede usar bind y replace en el mismo query 
-exports.executesimpletransaction = async (method, data, permissions = false, replacements = undefined) => {
+exports.executesimpletransaction = async (method, data, permissions = false, replacements = undefined, isarray = false) => {
     let functionMethod = functionsbd[method];
     if (functionMethod) {
         if (permissions && functionMethod.module) {
@@ -37,15 +37,23 @@ exports.executesimpletransaction = async (method, data, permissions = false, rep
         }
         const query = functionMethod.query;
         if (data instanceof Object || data === undefined) {
-            
-            return await sequelize.query(query, {
-                type: QueryTypes.SELECT,
+            const cons = await sequelize.query(query, {
+                type: QueryTypes.RAW,
                 replacements,
                 bind: data
             }).catch(err => {
                 console.log(err)
                 return getErrorSeq(err)
             });
+            return (isarray) ? cons : cons[0];
+            // return await sequelize.query(query, {
+            //     type: QueryTypes.RAW,
+            //     replacements,
+            //     bind: data
+            // }).catch(err => {
+            //     console.log(err)
+            //     return getErrorSeq(err)
+            // });
         } else {
             return getErrorCode(errors.VARIABLE_INCOMPATIBILITY_ERROR);
         }

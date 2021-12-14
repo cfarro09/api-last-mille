@@ -44,32 +44,17 @@ const validateResProperty = (r, type) => {
 
 exports.authenticate = async (req, res) => {
     const { data: { usr, password, facebookid, googleid } } = req.body;
-    let integration = false;
+    // let integration = false;
     try {
-        let result;
-        if (facebookid) {
-            result = await tf.executesimpletransaction("QUERY_AUTHENTICATED_BY_FACEBOOKID", { facebookid });
-            integration = true;
-        } else if (googleid) {
-            result = await tf.executesimpletransaction("QUERY_AUTHENTICATED_BY_GOOGLEID", { googleid });
-            integration = true;
-        } else {
-            result = await tf.executesimpletransaction("QUERY_AUTHENTICATED", { usr });
-        }
-
-        if (integration && !(result instanceof Array))
-            return res.status(401).json({ code: errors.LOGIN_NO_INTEGRATION });
-
+        let result = await tf.executesimpletransaction("QUERY_AUTHENTICATED", { usr });
         if (!result instanceof Array || result.length === 0)
             return res.status(401).json({ code: errors.LOGIN_USER_INCORRECT });
 
         const user = result[0];
 
-        if (!integration) {
-            const ispasswordmatch = await bcryptjs.compare(password, user.pwd)
-            if (!ispasswordmatch)
-                return res.status(401).json({ code: errors.LOGIN_USER_INCORRECT })
-        }
+        const ispasswordmatch = await bcryptjs.compare(password, user.pwd)
+        if (!ispasswordmatch)
+            return res.status(401).json({ code: errors.LOGIN_USER_INCORRECT })
 
         const tokenzyx = uuidv4();
 
@@ -88,14 +73,13 @@ exports.authenticate = async (req, res) => {
         let notifications = [];
         
         if (user.status === 'ACTIVO') {
-            // let resultProperties = {};
-            const resConnection = await tf.executesimpletransaction("UFN_PROPERTY_SELBYNAME", { ...user, propertyname: 'CONEXIONAUTOMATICAINBOX' })
+            let resultProperties = {};
+            // const resConnection = await tf.executesimpletransaction("UFN_PROPERTY_SELBYNAME", { ...user, propertyname: 'CONEXIONAUTOMATICAINBOX' })
 
-            const automaticConnection = validateResProperty(resConnection, 'bool');
-
+            // const automaticConnection = validateResProperty(resConnection, 'bool');
+            const automaticConnection = false;
             await Promise.all([
                 tf.executesimpletransaction("UFN_USERTOKEN_INS", dataSesion),
-                tf.executesimpletransaction("UFN_USERSTATUS_UPDATE", dataSesion),
                 ...(automaticConnection ? [tf.executesimpletransaction("UFN_USERSTATUS_UPDATE", {
                     ...user,
                     type: 'INBOX',
@@ -105,7 +89,7 @@ exports.authenticate = async (req, res) => {
                     username: user.usr
                 })] : [])
             ]);
-
+            
             user.token = tokenzyx;
             delete user.pwd;
 
@@ -141,13 +125,14 @@ exports.getUser = async (req, res) => {
     let resultProperties = {};
     try {
         const resultBD = await Promise.all([
-            tf.executesimpletransaction("UFN_APPLICATION_SEL", req.user),
-            tf.executesimpletransaction("UFN_ORGANIZATION_CHANGEORG_SEL", { userid: req.user.userid }),
-            tf.executesimpletransaction("UFN_LEADACTIVITY_DUEDATE_SEL", {...req.user, username: req.user.usr}),
-            tf.executesimpletransaction("QUERY_SEL_PROPERTY_ON_LOGIN", undefined, false, { propertynames: properties.map(x => x.propertyname), corpid: req.user.corpid, orgid: req.user.orgid, userid: req.user.userid }),
+            tf.executesimpletransaction("UFN_APPLICATION_SEL", req.user, false, undefined, true),
+            tf.executesimpletransaction("UFN_ORGANIZATION_CHANGEORG_SEL", { userid: req.user.userid }, false, undefined, true),
+            // tf.executesimpletransaction("UFN_LEADACTIVITY_DUEDATE_SEL", {...req.user, username: req.user.usr}),
+            tf.executesimpletransaction("QUERY_SEL_PROPERTY_ON_LOGIN", undefined, false, { propertynames: properties.map(x => x.propertyname), corpid: req.user.corpid, orgid: req.user.orgid, userid: req.user.userid }, true),
         ]);
 
-        const resultBDProperties = resultBD[3];
+        console.log('resultBD', resultBD)
+        const resultBDProperties = resultBD[2];
 
         if (!resultBD[0] instanceof Array) {
             return res.status(500).json(getErrorCode());
@@ -174,7 +159,7 @@ exports.getUser = async (req, res) => {
             // delete req.user.corpid;
             // delete req.user.orgid;
             // delete req.user.userid;
-            return res.json({ data: { ...req.user, menu, properties: resultProperties, token, organizations: resultBD[1], notifications: resultBD[2] } });
+            return res.json({ data: { ...req.user, menu, properties: resultProperties, token, organizations: resultBD[1], notifications: [] } });
         })
     } catch (error) {
         console.log(error)

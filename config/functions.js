@@ -1,9 +1,55 @@
 module.exports = {
     QUERY_AUTHENTICATED: {
-        query: "select us.pwdchangefirstlogin, org.description orgdesc, corp.description corpdesc, ous.corpid, ous.orgid, us.userid, us.usr, us.pwd, us.image, us.firstname, us.lastname, us.email, us.status, ous.redirect, role.description roledesc, COALESCE(cur.symbol, 'S/') currencysymbol, COALESCE(org.country, 'PE') countrycode from usr us inner join orguser ous on ous.userid = us.userid inner join org org on org.orgid = ous.orgid left join currency cur on cur.code = org.currency inner join corp corp on corp.corpid = ous.corpid inner join role role on role.roleid = ous.roleid where us.usr = $usr and ous.bydefault and ous.status <> 'ELIMINADO' limit 1",
+        query: "select org.description orgdesc, corp.description corpdesc, ous.corpid, ous.orgid, us.userid, us.usr, us.pwd, us.firstname, us.lastname, us.email, us.status, ous.redirect, role.description roledesc, COALESCE(org.country, 'PE') countrycode from usr us inner join orguser ous on ous.userid = us.userid inner join org org on org.orgid = ous.orgid inner join corp corp on corp.corpid = ous.corpid inner join role role on role.id_role = ous.id_role where us.usr = $usr and ous.bydefault and ous.status <> 'ELIMINADO' limit 1;",
         module: "",
         protected: false
     },
+    UFN_USERTOKEN_INS: {
+        // query: "select * from ufn_usertoken_ins($userid, $token, $origin)",
+        query: "CALL UFN_USERTOKEN_INS($userid, $token, $origin)",
+        module: "",
+        protected: "SELECT"
+    },
+    UFN_USERSTATUS_UPDATE: {
+        query: "CALL UFN_USERSTATUS_UPDATE($userid, $orgid, $type, $username, $status, $motive, $description)",
+        module: "",
+        protected: "SELECT"
+    },
+    UFN_APPLICATION_SEL: {
+        query: "CALL UFN_APPLICATION_SEL($corpid, $orgid, $userid)",
+        module: "",
+        protected: ""
+    },
+    UFN_ORGANIZATION_CHANGEORG_SEL: {
+        query: "CALL UFN_ORGANIZATION_CHANGEORG_SEL($userid)",
+        module: "",
+        protected: "SELECT"
+    },
+    QUERY_SEL_PROPERTY_ON_LOGIN: {
+        query: "SELECT propertyname, propertyvalue FROM property p WHERE p.corpid = :corpid AND p.orgid = :orgid AND p.propertyname IN (:propertynames) and p.status = 'ACTIVO';",
+        module: "",
+        protected: "SELECT"
+    },
+    UFN_USERTOKEN_SEL: {
+        query: "CALL UFN_USERTOKEN_SEL($corpid,$orgid,$userid,$token,$update)",
+        module: "",
+        protected: "SELECT"
+    },
+    SP_SEL_TEMPLATE: {
+        query: "CALL SP_SEL_TEMPLATE($userid,$orgid,$status,$type)",
+        module: "",
+        protected: "SELECT"
+    },
+
+
+
+
+
+
+
+
+
+
     QUERY_GET_PWD_BY_USERID: {
         query: "select pwd from usr where userid = $userid",
         module: "",
@@ -33,11 +79,6 @@ module.exports = {
         query: "SELECT * FROM ufn_user_sel($corpid, $orgid, $id, $username, $all)",
         module: "/extras/users",
         protected: "SELECT"
-    },
-    UFN_APPLICATION_SEL: {
-        query: "SELECT * FROM ufn_application_sel($corpid, $orgid, $userid)",
-        module: "",
-        protected: ""
     },
     UFN_ORGUSER_SEL: {
         query: "SELECT * FROM ufn_orguser_sel($corpid, $orgid, $userid, $username, $all)",
@@ -429,23 +470,8 @@ module.exports = {
         module: "",
         protected: "SELECT"
     },
-    UFN_USERTOKEN_INS: {
-        query: "select * from ufn_usertoken_ins($userid, $token, $origin)",
-        module: "",
-        protected: "SELECT"
-    },
-    UFN_USERSTATUS_UPDATE: {
-        query: "select * from ufn_userstatus_update($userid, $orgid, $type, $username, $status, $motive, $description)",
-        module: "",
-        protected: "SELECT"
-    },
     UFN_CLASSIFICATION_QUICKREPLYTREE_SEL: {
         query: "select * from ufn_classification_quickreplytree_sel($corpid, $orgid, $type)",
-        module: "",
-        protected: "SELECT"
-    },
-    UFN_USERTOKEN_SEL: {
-        query: "SELECT * FROM ufn_usertoken_sel($corpid,$orgid,$userid, $token)",
         module: "",
         protected: "SELECT"
     },
@@ -847,11 +873,6 @@ module.exports = {
     },
     UFN_CONVERSATION_SEL_PERSON_TOTALRECORDS: {
         query: "SELECT * FROM ufn_conversation_sel_person_totalrecords($personid, $where)",
-        module: "",
-        protected: "SELECT"
-    },
-    UFN_ORGANIZATION_CHANGEORG_SEL: {
-        query: "SELECT * FROM ufn_organization_changeorg_sel($userid)",
         module: "",
         protected: "SELECT"
     },
@@ -1378,11 +1399,6 @@ module.exports = {
     },
     UFN_BILLING_REPORT_USER: {
         query: "SELECT * FROM ufn_billing_report_user($corpid, $orgid, $year, $month)",
-        module: "",
-        protected: "SELECT"
-    },
-    QUERY_SEL_PROPERTY_ON_LOGIN: {
-        query: "SELECT propertyname, propertyvalue FROM property p WHERE p.corpid = :corpid AND p.orgid = :orgid AND p.propertyname IN (:propertynames) and p.status = 'ACTIVO';",
         module: "",
         protected: "SELECT"
     },

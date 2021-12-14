@@ -1,5 +1,5 @@
-const pg = require('pg');
-pg.types.setTypeParser(1114, str => str + 'Z');
+// const pg = require('pg');
+// pg.types.setTypeParser(1114, str => str + 'Z');
 
 require('dotenv').config();
 const Sequelize = require('sequelize');
@@ -13,17 +13,9 @@ const DBHOST = process.env.DBHOST
 module.exports = new Sequelize(DBNAME, DBUSER, DBPASSWORD, {
     host: DBHOST,
     port: DBPORT || 30503,
-    dialect: 'postgres',
+    dialect: 'mysql',
     logging: false,
-    dialectOptions: {
-        ssl: {
-            require: true,
-            // Ref.: https://github.com/brianc/node-postgres/issues/2009
-            rejectUnauthorized: false,
-        },
-        keepAlive: true,
-    },
-    ssl: true,
+    ssl: false,
     define: {
         freezeTableName: true,
         timestamps: false

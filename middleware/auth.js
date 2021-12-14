@@ -17,9 +17,8 @@ module.exports = async function (req, res, next) {
     try {
         const cifrado = jwt.verify(token, process.env.SECRETA);
         req.user = cifrado.user;
-        
-        const result = await tf.executesimpletransaction("UFN_USERTOKEN_SEL", cifrado.user);
 
+        const result = await tf.executesimpletransaction("UFN_USERTOKEN_SEL", {...cifrado.user, update: false}, false, undefined, true);
         if (result && result instanceof Array && result.length > 0) {
             if (result[0].status !== 'ACTIVO') {
                 if (result[0].status === 'INACTIVO')

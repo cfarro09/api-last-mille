@@ -1,5 +1,5 @@
 const sequelize = require('../config/database');
-const zyxmeSequelize = require("../config/databasezyxme");
+// const zyxmeSequelize = require("../config/databasezyxme");
 const { getErrorSeq } = require('../config/helpers');
 const { QueryTypes } = require('sequelize');
 const axios = require('axios');
@@ -115,12 +115,12 @@ const errorSeq = err => {
     };
 };
 
-const zyxmeQuery = async (query, bind = {}) => {
-    return await zyxmeSequelize.query(query, {
-        type: QueryTypes.SELECT,
-        bind
-    }).catch(err => errorSeq(err));
-}
+// const zyxmeQuery = async (query, bind = {}) => {
+//     return await zyxmeSequelize.query(query, {
+//         type: QueryTypes.SELECT,
+//         bind
+//     }).catch(err => errorSeq(err));
+// }
 
 const laraigoQuery = async (query, bind = {}) => {
     return await sequelize.query(query, {

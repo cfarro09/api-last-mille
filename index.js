@@ -2,23 +2,22 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const allowedOrigins = ['http://localhost:3000', 'http://52.116.128.51:5040'];
+const allowedOrigins = ['http://localhost:3000', 'http://52.116.128.51:5040', 'https://localhost:3000'];
 
 const app = express();
 
 app.use(cors(
-//     {
-//     origin: function (origin, callback) {
-//         console.log(origin);
-//         if (!origin) return callback(null, true);
-//         if (allowedOrigins.indexOf(origin) === -1) {
-//             var msg = 'The CORS policy for this site does not ' +
-//                 'allow access from the specified Origin.';
-//             return callback(new Error(msg), false);
-//         }
-//         return callback(null, true);
-//     }
-// }
+    {
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
+}
 ));
 app.use(express.json({ limit: '100mb' }));//to accept json
 
@@ -35,7 +34,7 @@ app.use('/api/subscription', require('./routes/subscription'));
 app.use('/api/reportdesigner', require('./routes/reportdesigner'));
 app.use('/api/user', require('./routes/user'));
 app.use('/api/check', require('./routes/check'));
-app.use('/api/migrator', require('./routes/migrator'));
+// app.use('/api/migrator', require('./routes/migrator'));
 app.use('/api/payment', require('./routes/payment'));
 
 // Definir la pagina principal
