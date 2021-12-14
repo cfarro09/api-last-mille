@@ -40,6 +40,21 @@ module.exports = {
         module: "",
         protected: "SELECT"
     },
+    UFN_SEL_MASSIVE_LOAD: {
+        query: "SELECT * from massive_load where massiveloadid = $massiveloadid limit 1",
+        module: "",
+        protected: false
+    },
+    UFN_SEL_MASSIVE_LOAD_DETAIL: {
+        query: "SELECT * from massive_load_detail where massiveloadid = $massiveloadid order by guide_number, seg_code, client_barcode",
+        module: "",
+        protected: false
+    },
+    SP_CHECK_ADDRESS: {
+        query: "CALL SP_CHECK_ADDRESS()",
+        module: "",
+        protected: false
+    },
 
 
 

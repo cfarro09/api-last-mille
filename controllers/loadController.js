@@ -2,6 +2,7 @@ const sequelize = require('../config/database');
 const { getErrorSeq } = require('../config/helpers');
 const { QueryTypes } = require('sequelize');
 const { setSessionParameters, errors, getErrorCode} = require('../config/helpers');
+const tf = require('../config/triggerfunctions');;
 
 exports.insert = async (req, res) => {
     const { loadtemplateid, data } = req.body
@@ -122,6 +123,34 @@ exports.insert = async (req, res) => {
     }
 }
 
+exports.process = async (req, res) => {
+    const { massiveloadid } = req.body;
+    let prev_value = '';
+    let current_value = '';
+
+    let result = await tf.executesimpletransaction("UFN_SEL_MASSIVE_LOAD", { massiveloadid });
+    if (!result instanceof Array || result.length === 0 || result[0].status !== 'PENDIENTE')
+        return res.status(401).json({ code: errors.INVALID_MASSIVELOAD });
+
+    let details = await tf.executesimpletransaction('UFN_SEL_MASSIVE_LOAD_DETAIL', { massiveloadid })
+    await Promise.all(details.map(async (item) => {
+        current_value = item.guide_number + item.seg_code + item.client_barcode
+        console.log('current_value', current_value)
+        console.log('prev_value', prev_value)
+        if (current_value != prev_value) {
+            let check_address = await tf.executesimpletransaction("UFN_SEL_ADDRESS", { address: item.client_address });
+            if (check_address.length === 0) {
+                console.log('insertar address')
+            }
+            console.log('check_address', check_address)
+        }
+    }))
+
+    // console.log('details', details);
+
+    
+    return res.json({ error: false, success: true, data: 'ok' });
+}
 
 // exports.load = async (req, res) => {
 //     const { filter = null, data = null, sort = null, limit = null} = req.body;

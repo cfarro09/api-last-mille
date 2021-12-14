@@ -160,7 +160,7 @@ exports.GetMultiCollection = async (detail, permissions = false) => {
             }
 
             const r = await sequelize.query(functionMethod.query, {
-                type: QueryTypes.SELECT,
+                type: QueryTypes.RAW,
                 bind: item.parameters
             }).catch(err => getErrorSeq(err));
 
