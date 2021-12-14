@@ -51,14 +51,15 @@ module.exports = {
         protected: false
     },
     SP_CHECK_ADDRESS: {
-        query: "CALL SP_CHECK_ADDRESS()",
+        query: "SELECT * from address where address = $address and district = $district limit 1",
         module: "",
         protected: false
     },
-
-
-
-
+    SP_SEL_MASSIVE_LOAD: {
+        query: "CALL SP_SEL_MASSIVE_LOAD($userid,$orgid)",
+        module: "",
+        protected: "SELECT"
+    },
 
 
 

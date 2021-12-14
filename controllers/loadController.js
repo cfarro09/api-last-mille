@@ -127,29 +127,44 @@ exports.process = async (req, res) => {
     const { massiveloadid } = req.body;
     let prev_value = '';
     let current_value = '';
+    let addressid = 0;
 
     let result = await tf.executesimpletransaction("UFN_SEL_MASSIVE_LOAD", { massiveloadid });
     if (!result instanceof Array || result.length === 0 || result[0].status !== 'PENDIENTE')
         return res.status(401).json({ code: errors.INVALID_MASSIVELOAD });
 
-    let details = await tf.executesimpletransaction('UFN_SEL_MASSIVE_LOAD_DETAIL', { massiveloadid })
-    await Promise.all(details.map(async (item) => {
-        current_value = item.guide_number + item.seg_code + item.client_barcode
-        console.log('current_value', current_value)
-        console.log('prev_value', prev_value)
-        if (current_value != prev_value) {
-            let check_address = await tf.executesimpletransaction("UFN_SEL_ADDRESS", { address: item.client_address });
-            if (check_address.length === 0) {
-                console.log('insertar address')
+    const transaction = await sequelize.transaction();
+    try {
+        let details = await tf.executesimpletransaction('UFN_SEL_MASSIVE_LOAD_DETAIL', { massiveloadid })
+        await Promise.all(details.map(async (item) => {
+            current_value = item.guide_number + item.seg_code + item.client_barcode
+            console.log('current_value', current_value)
+            console.log('prev_value', prev_value)
+            if (current_value != prev_value) {
+                let check_address = await tf.executesimpletransaction("SP_CHECK_ADDRESS", { address: item.client_address, district: item.district });
+                if (check_address.length === 0) {
+                    console.log("insertar address");
+                    const result = await sequelize.query(`
+                            INSERT INTO address(ubigeo, address, address_refernce, latitude, longitude, latitude_delivery, longitude_delivery, department, district, province, status, createby, changeby) 
+                            VALUES($ubigeo, $address, $address_refernce, $latitude, $longitude, $latitude_delivery, $longitude_delivery, $department, $district, $province, 'ACTIVO', $usr, $usr)
+                        `, {
+                        type: sequelize.QueryTypes.INSERT,
+                        bind: {...req.user, ...item},
+                        transaction
+                    }).catch(err => getErrorSeq(err));
+                } else {
+                    addressid = check_address[0].addressid;
+                }
+                console.log('check_address', check_address)
             }
-            console.log('check_address', check_address)
-        }
-    }))
-
-    // console.log('details', details);
-
-    
-    return res.json({ error: false, success: true, data: 'ok' });
+        }))
+        await transaction.commit()
+        return res.json({ error: false, success: true, data: 'ok' });
+    } catch (e) {
+        console.log(e)
+        await transaction.rollback();
+        return res.status(lasterror.rescode).json(lasterror);
+    }
 }
 
 // exports.load = async (req, res) => {
