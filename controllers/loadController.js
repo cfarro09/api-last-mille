@@ -27,7 +27,6 @@ exports.insert = async (req, res) => {
             transaction
         }).catch(err => getErrorSeq(err));
 
-        console.log('result', result[0])
         await Promise.all(data.map(async (item) => {
             
             const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
@@ -37,15 +36,18 @@ exports.insert = async (req, res) => {
                 lasterror = getErrorSeq(err);
                 throw 'error'
             });
-            console.log('check_ubigeo', check_ubigeo[0][0])
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
                 lasterror = getErrorCode(errors.INVALID_UBIGEO);
                 throw 'error'
             }
 
-            if ('client_date' in item && !item.client_date instanceof String) {
-                
+            if ('client_date' in item && !(item.client_date instanceof String)) {
+                item.client_date = new Date(Math.round((item.client_date - 25569)*86400*1000));
+            }
+
+            if ('client_date2' in item && !(item.client_date2 instanceof String)) {
+                item.client_date2 = new Date(Math.round((item.client_date2 - 25569)*86400*1000));
             }
 
             item.massiveloadid = result[0];
@@ -88,7 +90,6 @@ exports.insert = async (req, res) => {
             item.collect_time_range = item.collect_time_range || null;
             item.date_loaded = item.date_loaded || null;
             
-            console.log('item', item)
             let query = `
                 INSERT massive_load_detail(
                     massiveloadid, guide_number, seg_code, alt_code1, alt_code2, client_date, client_date2, client_barcode, client_dni, client_name, client_phone1, 
@@ -102,9 +103,7 @@ exports.insert = async (req, res) => {
                     $amount, $status, $createby, $changeby
                 )
             ` 
-
-            console.log('query', query);
-            const insert = await sequelize.query(query, {
+            await sequelize.query(query, {
                 type: sequelize.QueryTypes.INSERT,
                 bind: item,
                 transaction
@@ -112,63 +111,15 @@ exports.insert = async (req, res) => {
                 lasterror = getErrorSeq(err);
                 throw 'error'
             });
-
-            // if (functionsbd[item.method]) {
-            //     const query = functionsbd[item.method];
-            //     await sequelize.query(query, {
-            //         type: QueryTypes.SELECT,
-            //         bind: item.parameters,
-            //         transaction
-            //     }).catch(err => {
-            //         lasterror = getErrorSeq(err);
-            //         throw 'error'
-            //     });
-            // } else {
-            //     lasterror = getErrorCode(errors.NOT_FUNCTION_ERROR);
-            //     throw 'error'
-            // }
         }))
-        // await transaction.commit();
-        // return {
-        //     success: true,
-        //     error: false
-        // };
 
-
-
-        // data.forEach(async element => {
-        //     // chequear ubigeo
-        //     const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
-        //         type: QueryTypes.RAW,
-        //         bind: {department: element.department.toUpperCase(), district: element.district.toUpperCase(), province: element.province.toUpperCase()},
-        //     }).catch(err => {
-        //         console.log(err)
-        //         return getErrorSeq(err)
-        //     });
-
-        //     if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
-        //         return res.status(401).json({ code: errors.INVALID_UBIGEO });
-        //     }
-
-        //     console.log('check_ubigeo', check_ubigeo)
-        // })
-
-
-        // insertar en detalle
-
-        // console.log('result',result[0])
         await transaction.commit()
+        return res.json({ error: false, success: true, data: {'massiveloadid': result[0] } });
     } catch (e) {
         console.log(e)
         await transaction.rollback();
         return res.status(lasterror.rescode).json(lasterror);
     }
-
-    // const { filter = null, data = null, sort = null, limit = null} = req.body;
-
-    // setSessionParameters(parameters, req.user);
-
-    return res.json({ error: false, success: true, data: 'true' });
 }
 
 
