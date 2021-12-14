@@ -65,6 +65,27 @@ module.exports = {
         module: "",
         protected: "SELECT"
     },
+    SP_INS_GUIDE: {
+        query: "CALL SP_INS_GUIDE($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, $gstatus, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info)",
+        module: "",
+        protected: false
+    },
+    UFN_INS_GUIDE_TRACKING_PENDING: {
+        query: "INSERT INTO guide_tracking(guideid, status, motive) VALUES($guideid,'PROCESADO','Registro Automático.'),($guideid,'PENDIENTE','Registro Automático.')",
+        module: "",
+        protected: false
+    },
+    SP_INS_PRODUCT: {
+        query: "CALL SP_INS_PRODUCT($guideid, $sku_code, $sku_description, $sku_weight, $sku_pieces, $sku_brand, $sku_size, $box_code, $status, $usr)",
+        module: "",
+        protected: false
+    },
+    UFN_PROCESS_MASSIVE_LOAD: {
+        query: "UPDATE massive_load set status = 'PROCESADO', changeby = $usr where massiveloadid = $massiveloadid",
+        module: "",
+        protected: false
+    },
+    
 
 
 
