@@ -85,6 +85,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_GUIDES: {
+        query: "CALL SP_SEL_GUIDES($userid, $orgid)",
+        module: "",
+        protected: false
+    },
     
 
 

@@ -140,10 +140,10 @@ exports.process = async (req, res) => {
             ...acc,
             [item.guide_number + item.seg_code + item.client_barcode]: !acc[item.guide_number + item.seg_code + item.client_barcode] ? {
                 ...item,
-                detail: [item]
+                detail: [{sku_code: item.sku_code, sku_description: item.sku_description, sku_weight: item.sku_weight, sku_pieces: item.sku_pieces, sku_brand: item.sku_brand, sku_size: item.sku_size, box_code: item.box_code}]
             } : {
                 ...acc[item.guide_number + item.seg_code + item.client_barcode],
-                detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, item]
+                detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, {sku_code: item.sku_code, sku_description: item.sku_description, sku_weight: item.sku_weight, sku_pieces: item.sku_pieces, sku_brand: item.sku_brand, sku_size: item.sku_size, box_code: item.box_code}]
             }
         }),{})
 
