@@ -5,8 +5,12 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { errors, getErrorCode } = require('../config/helpers');
 
+exports.test = async (req, res) => {
+    return res.json({ data: 'success', success: true });
+}
+
 exports.authenticate = async (req, res) => {
-    const { data: { usr, password, facebookid, googleid } } = req.body;
+    const { email, password } = req.body;
     // let integration = false;
     try {
         let result = await tf.executesimpletransaction("QUERY_AUTHENTICATED_DRIVER", { email });
@@ -14,8 +18,10 @@ exports.authenticate = async (req, res) => {
             return res.status(401).json({ code: errors.LOGIN_USER_INCORRECT });
 
         const user = result[0];
+        user.userid = user.driverid
+        delete user.driverid
 
-        const ispasswordmatch = await bcryptjs.compare(password, user.pwd)
+        const ispasswordmatch = await bcryptjs.compare(password, user.password)
         if (!ispasswordmatch)
             return res.status(401).json({ code: errors.LOGIN_USER_INCORRECT })
 
@@ -25,32 +31,32 @@ exports.authenticate = async (req, res) => {
             userid: user.userid,
             orgid: user.orgid,
             corpid: user.corpid,
-            username: usr,
+            username: user.email,
             status: 'ACTIVO',
             motive: null,
             token: tokenzyx,
-            origin: 'WEB',
+            origin: 'APP',
             type: 'LOGIN',
             description: null
         };
         let notifications = [];
         
         if (user.status === 'ACTIVO') {
-            let resultProperties = {};
+            // let resultProperties = {};
             // const resConnection = await tf.executesimpletransaction("UFN_PROPERTY_SELBYNAME", { ...user, propertyname: 'CONEXIONAUTOMATICAINBOX' })
 
             // const automaticConnection = validateResProperty(resConnection, 'bool');
-            const automaticConnection = false;
+            // const automaticConnection = false;
             await Promise.all([
                 tf.executesimpletransaction("UFN_USERTOKEN_INS", dataSesion),
-                ...(automaticConnection ? [tf.executesimpletransaction("UFN_USERSTATUS_UPDATE", {
-                    ...user,
-                    type: 'INBOX',
-                    status: 'ACTIVO',
-                    description: null,
-                    motive: null,
-                    username: user.usr
-                })] : [])
+                // ...(automaticConnection ? [tf.executesimpletransaction("UFN_USERSTATUS_UPDATE", {
+                //     ...user,
+                //     type: 'INBOX',
+                //     status: 'ACTIVO',
+                //     description: null,
+                //     motive: null,
+                //     username: user.usr
+                // })] : [])
             ]);
             
             user.token = tokenzyx;
@@ -61,7 +67,7 @@ exports.authenticate = async (req, res) => {
                 delete user.corpid;
                 delete user.orgid;
                 delete user.userid;
-                return res.json({ data: { ...user, token, automaticConnection, notifications }, success: true });
+                return res.json({ data: { first_name: user.first_name, last_name: user.last_name, email: user.email, token, token_type: 'Bearer' }, success: true });
             })
         } else if (user.status === 'PENDIENTE') {
             return res.status(401).json({ code: errors.LOGIN_USER_PENDING })

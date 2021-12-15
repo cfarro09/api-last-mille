@@ -4,6 +4,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    QUERY_AUTHENTICATED_DRIVER: {
+        query: "select dv.* from driver dv where email = $email and dv.status <> 'ELIMINADO' limit 1;",
+        module: "",
+        protected: false
+    },
     UFN_USERTOKEN_INS: {
         // query: "select * from ufn_usertoken_ins($userid, $token, $origin)",
         query: "CALL UFN_USERTOKEN_INS($userid, $token, $origin)",
@@ -31,7 +36,7 @@ module.exports = {
         protected: "SELECT"
     },
     UFN_USERTOKEN_SEL: {
-        query: "CALL UFN_USERTOKEN_SEL($corpid,$orgid,$userid,$token,$update)",
+        query: "CALL UFN_USERTOKEN_SEL($corpid,$orgid,$userid,$token,$update,$origin)",
         module: "",
         protected: "SELECT"
     },
