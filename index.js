@@ -36,6 +36,7 @@ app.use('/api/user', require('./routes/user'));
 app.use('/api/check', require('./routes/check'));
 // app.use('/api/migrator', require('./routes/migrator'));
 app.use('/api/payment', require('./routes/payment'));
+app.use('/api/app', require('./routes/app'));
 
 // Definir la pagina principal
 app.get('/', (req, res) => {

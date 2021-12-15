@@ -95,6 +95,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_CREATE_SHIPPING_ORDER: {
+        query: "CALL SP_CREATE_SHIPPING_ORDER($vehicleid, $driverid, $quadrant_name, $guide_ids, $username)",
+        module: "",
+        protected: false
+    },
     
 
 
