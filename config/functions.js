@@ -105,8 +105,11 @@ module.exports = {
         module: "",
         protected: false
     },
-    
-
+    SP_DEL_MASSIVE_LOAD: {
+        query: "CALL SP_DEL_MASSIVE_LOAD($massiveloadid, $username)",
+        module: "",
+        protected: false
+    },
 
 
 
