@@ -52,7 +52,6 @@ exports.insert = async (req, res) => {
             }
 
             if (!item.guide_number) {
-                console.log('aca entro')
                 item.guide_number = item.seg_code;
             }
 
