@@ -51,7 +51,7 @@ exports.insert = async (req, res) => {
                 item.client_date2 = new Date(Math.round((item.client_date2 - 25569)*86400*1000));
             }
 
-            if (!('guide_number' in item)) {
+            if (!item.guide_number) {
                 item.guide_number = item.seg_code;
             }
 
