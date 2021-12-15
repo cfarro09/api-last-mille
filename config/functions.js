@@ -46,7 +46,7 @@ module.exports = {
         protected: "SELECT"
     },
     UFN_SEL_MASSIVE_LOAD: {
-        query: "SELECT * from massive_load where massiveloadid = $massiveloadid limit 1",
+        query: "SELECT * from massive_load where massiveloadid = $massiveloadid order by 1 desc limit 1",
         module: "",
         protected: false
     },
