@@ -110,7 +110,26 @@ module.exports = {
         module: "",
         protected: false
     },
-
+    SP_SEL_GUIDE_BY_BARCODE: {
+        query: "CALL SP_SEL_GUIDE_BY_BARCODE($search, $filterBy, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDE_INFO: {
+        query: "CALL SP_SEL_GUIDE_INFO($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDE_TRACKING: {
+        query: "CALL SP_SEL_GUIDE_TRACKING($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_IMG_GUIDES: {
+        query: "CALL SP_SEL_IMG_GUIDES($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 
