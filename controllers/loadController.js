@@ -77,7 +77,7 @@ exports.insert = async (req, res) => {
             item.department = check_ubigeo[0][0].department || null;
             item.district = check_ubigeo[0][0].district || null;
             item.province = check_ubigeo[0][0].province || null;
-            item.sku_code = check_ubigeo[0][0].sku_code || null;
+            item.sku_code = item.sku_code || null;
             item.sku_description = item.sku_description || null;
             item.sku_weight = item.sku_weight || null;
             item.sku_pieces = item.sku_pieces || null;
