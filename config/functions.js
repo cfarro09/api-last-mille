@@ -130,6 +130,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_SHIPPING_ORDERS: {
+        query: "CALL SP_SEL_SHIPPING_ORDERS($status, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 
