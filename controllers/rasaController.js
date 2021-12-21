@@ -49,6 +49,8 @@ exports.CallRasa = async (req, res) => {
                         data[key] = data[key] ? parseFloat(data[key]) : null;
                     } else if (value === "integer") {
                         data[key] = data[key] ? parseInt(data[key]) : null;
+                    } else if (value === "date") {
+                        data[key] = data[key] ? data[key] : null;
                     }
                 })
                 return sequelize.query(query, {
