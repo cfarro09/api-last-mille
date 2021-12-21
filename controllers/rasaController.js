@@ -40,23 +40,30 @@ exports.CallRasa = async (req, res) => {
 
     let countrepeated = 0;
 
-    while (countrepeated < repeated) {
-        const rr = f.slice(countrepeated * LIMIT_BLOCK, (countrepeated + 1) * LIMIT_BLOCK).map(data => {
-            Object.entries(observations).forEach(([key, value]) => {
-                if (value === "double") {
-                    data[key] = data[key] ? parseFloat(data[key]) : null;
-                }
+    try {
+        
+        while (countrepeated < repeated) {
+            const rr = f.slice(countrepeated * LIMIT_BLOCK, (countrepeated + 1) * LIMIT_BLOCK).map(data => {
+                Object.entries(observations).forEach(([key, value]) => {
+                    if (value === "double") {
+                        data[key] = data[key] ? parseFloat(data[key]) : null;
+                    } else if (value === "integer") {
+                        data[key] = data[key] ? parseInt(data[key]) : null;
+                    }
+                })
+                return sequelize.query(query, {
+                    type: QueryTypes.RAW,
+                    bind: data
+                }).catch(err => {
+                    console.log(err)
+                });
             })
-            return sequelize.query(query, {
-                type: QueryTypes.RAW,
-                bind: data
-            }).catch(err => {
-                console.log(err)
-            });
-        })
-        console.log("countrepeated", countrepeated)
-        await Promise.all(rr);
-        countrepeated++;
+            console.log("countrepeated", countrepeated)
+            await Promise.all(rr);
+            countrepeated++;
+        }
+    } catch (error) {
+        return res.json({ success: true, error: JSON.stringify(error) }) 
     }
 
     return res.json({ success: true, query })
