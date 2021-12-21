@@ -37,7 +37,8 @@ exports.CallRasa = async (req, res) => {
     const LIMIT_BLOCK = req.body.limit ? parseInt(req.body.limit) : 500;
 
     const repeated = Math.ceil(f.length / LIMIT_BLOCK);
-
+    console.log("cantidad", f.length)
+    console.log("n° repeticiones", repeated)
     let countrepeated = 0;
 
     try {
