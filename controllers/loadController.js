@@ -51,6 +51,10 @@ exports.insert = async (req, res) => {
                 item.client_date2 = new Date(Math.round((item.client_date2 - 25569)*86400*1000));
             }
 
+            if (!item.guide_number) {
+                item.guide_number = item.seg_code;
+            }
+
             item.massiveloadid = result[0];
             item.seg_code = item.seg_code || null;
             item.guide_number = item.guide_number || null;
@@ -73,7 +77,7 @@ exports.insert = async (req, res) => {
             item.department = check_ubigeo[0][0].department || null;
             item.district = check_ubigeo[0][0].district || null;
             item.province = check_ubigeo[0][0].province || null;
-            item.sku_code = check_ubigeo[0][0].sku_code || null;
+            item.sku_code = item.sku_code || null;
             item.sku_description = item.sku_description || null;
             item.sku_weight = item.sku_weight || null;
             item.sku_pieces = item.sku_pieces || null;
@@ -140,78 +144,24 @@ exports.process = async (req, res) => {
             ...acc,
             [item.guide_number + item.seg_code + item.client_barcode]: !acc[item.guide_number + item.seg_code + item.client_barcode] ? {
                 ...item,
-                // client_barcode: item.item.client_barcode || generarcode(),
-                guide_number: item.guide_number || 'rpobando',
-                total_weight: item.weight || 0,
-                detail: [item]
+                detail: [{sku_code: item.sku_code, sku_description: item.sku_description, sku_weight: item.sku_weight, sku_pieces: item.sku_pieces, sku_brand: item.sku_brand, sku_size: item.sku_size, box_code: item.box_code}]
             } : {
                 ...acc[item.guide_number + item.seg_code + item.client_barcode],
-                total_weight: acc[item.guide_number + item.seg_code + item.client_barcode].total_weight + (item.weight || 0),
-                detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, item]
+                detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, {sku_code: item.sku_code, sku_description: item.sku_description, sku_weight: item.sku_weight, sku_pieces: item.sku_pieces, sku_brand: item.sku_brand, sku_size: item.sku_size, box_code: item.box_code}]
             }
         }),{})
 
-        console.log("dataunificada", Object.values(dataunificada)[0]);
-
-
-
-
-
-
-        await Promise.all(details.map(async (item) => {
-            current_value = item.guide_number + item.seg_code + item.client_barcode
-            console.log('current_value', current_value)
-            console.log('prev_value', prev_value)
-
-            /*
-                2020, 123, tv
-                2020, 123, control
-                2021, 222, monitor
-            */
-           // 2021123
-           // 2021222
-            // checar la direccion
-            // insertar en guia
-            // insertar en tracking
-            // insertar en sku_product
-
-
-
-
-            // console.log('item',item);
-            // console.log('massive_load', massive_load)
-
-            if (current_value !== prev_value) {
-                let check_address = await tf.executesimpletransaction("SP_CHECK_ADDRESS", { ...item, address: item.client_address, address_refernce: item.client_address_reference, usr: req.user.usr },false, undefined,false,transaction);
-                // console.log('check_address', check_address.addressid)
-                
-                let query = `
-                    INSERT INTO guide (corpid, orgid, clientid, storeid, massiveloadid, addressid, guide_number, seg_code, alt_code1, alt_code2, client_date, client_barcode, client_date2, client_dni, client_name, client_phone1, client_phone2, client_phone3, client_email, status, createby, changeby, collect_time_range, collect_contact_name, payment_method, amount, seller_name, client_info)
-                    VALUES ($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, 'PENDIENTE', $usr, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info)
-                `
-                let guide = await sequelize.query(query, {
-                    type: sequelize.QueryTypes.INSERT,
-                    bind: {...massive_load[0], ...item, addressid: check_address.addressid, usr: req.user.usr},
-                    transaction
-                }).catch(err => {
-                    lasterror = getErrorSeq(err);
-                    throw 'error'
-                });
-
-                // console.log('guideid', guide[0])
-                await sequelize.query("INSERT INTO guide_tracking(guideid, status, motive) VALUES($guideid,'PROCESADO','Registro Automático.'),($guideid,'PENDIENTE','Registro Automático.')",{
-                    type: sequelize.QueryTypes.INSERT,
-                    bind: {guideid: guide[0]},
-                    transaction
-                }).catch(err => {
-                    lasterror = getErrorSeq(err);
-                    throw 'error'
-                });
-            }
-            console.log('aca')
-            prev_value = current_value;
+        await tf.executesimpletransaction("UFN_PROCESS_MASSIVE_LOAD", {usr: req.user.usr, massiveloadid},false, undefined,false,transaction);
+        await Promise.all(Object.values(dataunificada).map( async (item) => {
+            let check_address = await tf.executesimpletransaction("SP_CHECK_ADDRESS", { ...item, address: item.client_address, address_refernce: item.client_address_reference, usr: req.user.usr },false, undefined,false,transaction);
+            let guide = await tf.executesimpletransaction("SP_INS_GUIDE", {...massive_load[0], ...item, addressid: check_address.addressid, usr: req.user.usr, gstatus: 'PENDIENTE'},false, undefined,false,transaction);
+            await tf.executesimpletransaction("UFN_INS_GUIDE_TRACKING_PENDING", {guideid: guide.guideid},false, undefined,false,transaction);
+            item.detail.forEach(async element => {
+                await tf.executesimpletransaction("SP_INS_PRODUCT", {guideid: guide.guideid, ...element, usr: req.user.usr, status: 'ACTIVO'},false, undefined,false,transaction);
+            });
         }))
-        // await transaction.commit()
+
+        await transaction.commit()
         return res.json({ error: false, success: true, data: 'ok' });
     } catch (e) {
         console.log(e)

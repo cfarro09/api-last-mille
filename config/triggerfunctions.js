@@ -40,6 +40,7 @@ exports.executesimpletransaction = async (method, data, permissions = false, rep
             const cons = await sequelize.query(query, {
                 type: QueryTypes.RAW,
                 replacements,
+                transaction,
                 bind: data
             }).catch(err => {
                 console.log(err)

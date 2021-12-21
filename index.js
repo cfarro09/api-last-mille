@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const allowedOrigins = ['http://localhost:3000', 'http://52.116.128.51:5040', 'https://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://app.qaplaperu.com', 'https://app.qaplaperu.com/', 'http://52.116.128.51:5040', 'https://localhost:3000', 'http://142.44.214.184:9999', 'http://laraigo2.s3-web.us-south.cloud-object-storage.appdomain.cloud'];
 
 const app = express();
 
@@ -36,6 +36,7 @@ app.use('/api/user', require('./routes/user'));
 app.use('/api/check', require('./routes/check'));
 // app.use('/api/migrator', require('./routes/migrator'));
 app.use('/api/payment', require('./routes/payment'));
+app.use('/api/app', require('./routes/app'));
 
 app.use('/api/rasagraciela', require('./routes/rasa'));
 

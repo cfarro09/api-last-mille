@@ -4,6 +4,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    QUERY_AUTHENTICATED_DRIVER: {
+        query: "select dv.* from driver dv where email = $email and dv.status <> 'ELIMINADO' limit 1;",
+        module: "",
+        protected: false
+    },
     UFN_USERTOKEN_INS: {
         // query: "select * from ufn_usertoken_ins($userid, $token, $origin)",
         query: "CALL UFN_USERTOKEN_INS($userid, $token, $origin)",
@@ -31,7 +36,7 @@ module.exports = {
         protected: "SELECT"
     },
     UFN_USERTOKEN_SEL: {
-        query: "CALL UFN_USERTOKEN_SEL($corpid,$orgid,$userid,$token,$update)",
+        query: "CALL UFN_USERTOKEN_SEL($corpid,$orgid,$userid,$token,$update,$origin)",
         module: "",
         protected: "SELECT"
     },
@@ -41,7 +46,7 @@ module.exports = {
         protected: "SELECT"
     },
     UFN_SEL_MASSIVE_LOAD: {
-        query: "SELECT * from massive_load where massiveloadid = $massiveloadid limit 1",
+        query: "SELECT * from massive_load where massiveloadid = $massiveloadid order by 1 desc limit 1",
         module: "",
         protected: false
     },
@@ -65,8 +70,66 @@ module.exports = {
         module: "",
         protected: "SELECT"
     },
-
-
+    SP_INS_GUIDE: {
+        query: "CALL SP_INS_GUIDE($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, $gstatus, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info)",
+        module: "",
+        protected: false
+    },
+    UFN_INS_GUIDE_TRACKING_PENDING: {
+        query: "INSERT INTO guide_tracking(guideid, status, motive) VALUES($guideid,'PROCESADO','Registro Automático.'),($guideid,'PENDIENTE','Registro Automático.')",
+        module: "",
+        protected: false
+    },
+    SP_INS_PRODUCT: {
+        query: "CALL SP_INS_PRODUCT($guideid, $sku_code, $sku_description, $sku_weight, $sku_pieces, $sku_brand, $sku_size, $box_code, $status, $usr)",
+        module: "",
+        protected: false
+    },
+    UFN_PROCESS_MASSIVE_LOAD: {
+        query: "UPDATE massive_load set status = 'PROCESADO', changeby = $usr where massiveloadid = $massiveloadid",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDES: {
+        query: "CALL SP_SEL_GUIDES($userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_VEHICLE_DRIVER: {
+        query: "CALL SP_VEHICLE_DRIVER($userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_CREATE_SHIPPING_ORDER: {
+        query: "CALL SP_CREATE_SHIPPING_ORDER($vehicleid, $driverid, $quadrant_name, $guide_ids, $username)",
+        module: "",
+        protected: false
+    },
+    SP_DEL_MASSIVE_LOAD: {
+        query: "CALL SP_DEL_MASSIVE_LOAD($massiveloadid, $username)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDE_BY_BARCODE: {
+        query: "CALL SP_SEL_GUIDE_BY_BARCODE($search, $filterBy, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDE_INFO: {
+        query: "CALL SP_SEL_GUIDE_INFO($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_GUIDE_TRACKING: {
+        query: "CALL SP_SEL_GUIDE_TRACKING($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_IMG_GUIDES: {
+        query: "CALL SP_SEL_IMG_GUIDES($guideid, $userid, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 
