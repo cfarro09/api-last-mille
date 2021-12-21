@@ -34,16 +34,16 @@ exports.CallRasa = async (req, res) => {
     query = query.replace('###COLUMNS###', rr.columns.substring(0, rr.columns.length - 1));
     query = query.replace('###VALUES###', rr.values.substring(0, rr.values.length - 1));
 
-    const LIMIT_BLOCK = 500;
+    const LIMIT_BLOCK = req.body.limit ? parseInt(req.body.limit) : 500;
 
     const repeated = Math.ceil(f.length / LIMIT_BLOCK);
+
     let countrepeated = 0;
 
     while (countrepeated < repeated) {
-        const rr =  f.slice(countrepeated * LIMIT_BLOCK, (countrepeated + 1) * LIMIT_BLOCK).map(data => {
+        const rr = f.slice(countrepeated * LIMIT_BLOCK, (countrepeated + 1) * LIMIT_BLOCK).map(data => {
             Object.entries(observations).forEach(([key, value]) => {
                 if (value === "double") {
-                    // console.log(value, data[key])
                     data[key] = data[key] ? parseFloat(data[key]) : null;
                 }
             })
@@ -58,33 +58,6 @@ exports.CallRasa = async (req, res) => {
         await Promise.all(rr);
         countrepeated++;
     }
-    // f.forEach(data => {
-
-    //     Object.entries(observations).forEach(([key, value]) => {
-    //         if (value === "double") {
-    //             console.log(value, data[key])
-    //             data[key] = data[key] ? parseFloat(data[key]) : null;
-    //         }
-    //     })
-    //     sequelize.query(query, {
-    //         type: QueryTypes.RAW,
-    //         bind: data
-    //     }).catch(err => {
-    //         console.log(err)
-
-    //     });
-    // })
-    //leer el excel
-    // let workbook = xlsx.read(buffer);
-    // const wsname = workbook.SheetNames[1];//se elige la hoja segun el orden
-
-    // //leer la data de la hoja seleccionada previamente y lo pasa a json
-    // const datatoprocess = xlsx.utils.sheet_to_row_object_array(workbook.Sheets[wsname]);
-
 
     return res.json({ success: true, query })
 }
-
-
-
-
