@@ -142,10 +142,11 @@ exports.process = async (req, res) => {
                 ...item,
                 // client_barcode: item.item.client_barcode || generarcode(),
                 guide_number: item.guide_number || 'rpobando',
-                // total_weight
+                total_weight: item.weight || 0,
                 detail: [item]
             } : {
                 ...acc[item.guide_number + item.seg_code + item.client_barcode],
+                total_weight: acc[item.guide_number + item.seg_code + item.client_barcode].total_weight + (item.weight || 0),
                 detail: [...acc[item.guide_number + item.seg_code + item.client_barcode].detail, item]
             }
         }),{})

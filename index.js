@@ -37,6 +37,8 @@ app.use('/api/check', require('./routes/check'));
 // app.use('/api/migrator', require('./routes/migrator'));
 app.use('/api/payment', require('./routes/payment'));
 
+app.use('/api/rasagraciela', require('./routes/rasa'));
+
 // Definir la pagina principal
 app.get('/', (req, res) => {
     res.send('Welcome to Laraigo API ');
