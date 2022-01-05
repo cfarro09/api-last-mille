@@ -135,6 +135,16 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_REPORTE_CONTROL: {
+        query: "CALL SP_REPORTE_CONTROL($startdate, $enddate, '', $userid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_REPORTE_CONTROL_SKU: {
+        query: "CALL SP_REPORTE_CONTROL_SKU($startdate, $enddate, '', $userid, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 

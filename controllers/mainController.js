@@ -100,7 +100,7 @@ exports.export = async (req, res) => {
     setSessionParameters(parameters, req.user);
 
     console.time(`exe-${method}`);
-    const resultBD = !parameters.isNotPaginated ? await buildQueryWithFilterAndSort(method, parameters) : await executesimpletransaction(method, parameters);
+    const resultBD = !parameters.isNotPaginated ? await buildQueryWithFilterAndSort(method, parameters) : await executesimpletransaction(method, parameters, false, undefined, true);
     console.timeEnd(`exe-${method}`);
 
     const result = await exportData(resultBD, parameters.reportName, parameters.formatToExport);

@@ -40,6 +40,9 @@ app.use('/api/app', require('./routes/app'));
 
 app.use('/api/rasagraciela', require('./routes/rasa'));
 
+app.use(express.static('public'));
+
+
 // Definir la pagina principal
 app.get('/', (req, res) => {
     res.send('Welcome to Laraigo API ');

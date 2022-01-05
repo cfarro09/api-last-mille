@@ -352,36 +352,21 @@ exports.buildQueryDynamic = async (columns, filters, parameters) => {
     }
 }
 
-exports.exportData = (dataToExport, reportName, formatToExport) => {
+exports.exportData = async (dataToExport, reportName, formatToExport) => {
     let content = "";
     try {
-        const titlefile = (reportName || "report") + new Date().toISOString() + (formatToExport ? ".xlsx" : ".csv");
+        const titlefile = (reportName || "report") + new Date().toISOString().slice(0,10) + '_' + (Math.floor(Math.random() * 10000) + 1) + (formatToExport ? ".xlsx" : ".csv");
         if (dataToExport instanceof Array && dataToExport.length > 0) {
             var s3 = new ibm.S3(config);
 
             if (formatToExport === "excel") {
                 const ws = XLSX.utils.json_to_sheet(dataToExport);
-                const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-                const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws);
+                XLSX.writeFile(wb, `./public/reports/${titlefile}` );
 
-                const params = {
-                    ACL: 'public-read',
-                    Key: titlefile,
-                    Body: excelBuffer,
-                    Bucket: COS_BUCKET_NAME,
-                    ContentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-                }
-                console.time(`uploadcos`);
-                return new Promise((res, rej) => {
-                    s3.upload(params, (err, data) => {
-                        if (err) {
-                            res(getErrorCode(errors.COS_UNEXPECTED, err));
-                        } else {
-                            console.timeEnd(`uploadcos`);
-                            res({ url: data.Location })
-                        }
-                    });
-                });
+                return { url: `${process.env.HOST}/reports/${titlefile}`  }
+
             } else {
                 console.time(`draw-csv`);
                 content += Object.keys(dataToExport[0]).join() + "\n";
