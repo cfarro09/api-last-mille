@@ -145,6 +145,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_REPORTE_ASIGNACION_POR_GUIA: {
+        query: "CALL SP_REPORTE_ASIGNACION_POR_GUIA($startdate, $enddate, '', $userid, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 
