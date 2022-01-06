@@ -71,7 +71,7 @@ module.exports = {
         protected: "SELECT"
     },
     SP_INS_GUIDE: {
-        query: "CALL SP_INS_GUIDE($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, $gstatus, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info)",
+        query: "CALL SP_INS_GUIDE($corpid, $orgid, $clientid, $storeid, $massiveloadid, $addressid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_barcode, $client_date2, $client_dni, $client_name, $client_phone1, $client_phone2, $client_phone3, $client_email, $gstatus, $usr, $collect_time_range, $collect_contact_name, $payment_method, $amount, $seller_name, $client_info, $delivery_type)",
         module: "",
         protected: false
     },
