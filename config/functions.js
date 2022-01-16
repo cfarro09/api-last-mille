@@ -190,6 +190,16 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_INS_DRIVER: {
+        query: "CALL SP_INS_DRIVER($id, $corpid, $orgid, $first_name, $last_name, $doc_number, $doc_type, $password, $email, $phone, $status, $username, $operation)",
+        module: "",
+        protected: "INSERT"
+    },
+    SP_INS_VEHICLE: {
+        query: "CALL SP_INS_VEHICLE($id, $corpid, $orgid, $driverid, $providerid, $vehicle_type, $brand, $model, $plate_number, $soat, $status, $username, $operation)",
+        module: "",
+        protected: "INSERT"
+    },
 
 
 
