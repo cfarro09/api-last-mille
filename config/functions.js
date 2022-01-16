@@ -150,6 +150,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_USER: {
+        query: "CALL SP_SEL_USER($status, $orgid)",
+        module: "",
+        protected: false
+    },
 
 
 
