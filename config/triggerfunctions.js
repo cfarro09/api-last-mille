@@ -199,7 +199,7 @@ exports.executeTransaction = async (header, detail, permissions = false) => {
             if (parameters instanceof Object) {
                 //console.log(parameters);
                 const result = await sequelize.query(functionMethod.query, {
-                    type: QueryTypes.SELECT,
+                    type: QueryTypes.RAW,
                     bind: parameters,
                     transaction
                 }).catch(err => getErrorSeq(err));

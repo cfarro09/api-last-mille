@@ -155,6 +155,41 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_INS_ORGUSER: {
+        query: "CALL SP_INS_ORGUSER($corpid,$orgid,$userid,$roleid,$bydefault,$type,$status,$redirect,$username,$operation)",
+        module: "",
+        protected: "INSERT"
+    },
+    SP_USER_INS: {
+        query: "CALL SP_USER_INS($id,$usr,$password,$email,$phone,$firstname,$lastname,$doctype,$docnum,$description,$type,$status,$username,$operation)",
+        module: "",
+        protected: "INSERT"
+    },
+    SP_ROLE_LST: {
+        query: "CALL SP_ROLE_LST($userid)",
+        module: "",
+        protected: "INSERT"
+    },
+    SP_SE_CORP_ORG: {
+        query: "CALL SP_SE_CORP_ORG($corpid, $id, $username, $all)",
+        module: "",
+        protected: "INSERT"
+    },
+    SP_SEL_APPS_DATA: {
+        query: "CALL SP_SEL_APPS_DATA($id_role)",
+        module: "",
+        protected: "INSERT"
+    },
+    // UFN_ORGUSER_INS: {
+    //     query: "SELECT * FROM ufn_orguser_ins($corpid,$orgid,$userid,$roleid,$bydefault,$type,$status,$redirect,$usr,$operation)",
+    //     module: "",
+    //     protected: "INSERT"
+    // },
+    // UFN_USER_INS: {
+    //     query: "SELECT * FROM ufn_user_ins($id, $usr, $doctype, $docnum, $password, $firstname, $lastname, $email, $pwdchangefirstlogin, $type, $status,$description, $username, $operation, $company, $twofactorauthentication, $registercode, $billinggroup, $image)",
+    //     module: "/extras/users",
+    //     protected: "INSERT"
+    // },
 
 
 
