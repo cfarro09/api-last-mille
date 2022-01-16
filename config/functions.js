@@ -210,7 +210,11 @@ module.exports = {
         module: "",
         protected: false
     },
-
+    SP_SEL_PROVIDER: {
+        query: "CALL SP_SEL_PROVIDER($corpid, $userid)",
+        module: "",
+        protected: false
+    },
 
 
 
