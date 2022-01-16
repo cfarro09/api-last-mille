@@ -168,28 +168,28 @@ module.exports = {
     SP_ROLE_LST: {
         query: "CALL SP_ROLE_LST($userid)",
         module: "",
-        protected: "INSERT"
+        protected: false
     },
     SP_SE_CORP_ORG: {
         query: "CALL SP_SE_CORP_ORG($corpid, $id, $username, $all)",
         module: "",
-        protected: "INSERT"
+        protected: false
     },
     SP_SEL_APPS_DATA: {
         query: "CALL SP_SEL_APPS_DATA($id_role)",
         module: "",
-        protected: "INSERT"
+        protected: false
     },
-    // UFN_ORGUSER_INS: {
-    //     query: "SELECT * FROM ufn_orguser_ins($corpid,$orgid,$userid,$roleid,$bydefault,$type,$status,$redirect,$usr,$operation)",
-    //     module: "",
-    //     protected: "INSERT"
-    // },
-    // UFN_USER_INS: {
-    //     query: "SELECT * FROM ufn_user_ins($id, $usr, $doctype, $docnum, $password, $firstname, $lastname, $email, $pwdchangefirstlogin, $type, $status,$description, $username, $operation, $company, $twofactorauthentication, $registercode, $billinggroup, $image)",
-    //     module: "/extras/users",
-    //     protected: "INSERT"
-    // },
+    SP_DOMAIN_LST: {
+        query: "CALL SP_DOMAIN_LST($corpid, $orgid)",
+        module: "",
+        protected: false
+    },
+    SP_DOMAIN_LST_VALUES: {
+        query: "CALL SP_DOMAIN_LST_VALUES($corpid, $orgid, $domainname)",
+        module: "",
+        protected: false
+    },
 
 
 
