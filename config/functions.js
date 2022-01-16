@@ -156,7 +156,7 @@ module.exports = {
         protected: false
     },
     SP_INS_ORGUSER: {
-        query: "CALL SP_INS_ORGUSER($corpid,$orgid,$userid,$roleid,$bydefault,$type,$status,$redirect,$username,$operation)",
+        query: "CALL SP_INS_ORGUSER($corpid,$orgid,$userid,$id_role,$bydefault,$type,$status,$redirect,$username,$operation)",
         module: "",
         protected: "INSERT"
     },
