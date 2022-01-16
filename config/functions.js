@@ -215,6 +215,4 @@ module.exports = {
         module: "",
         protected: false
     },
-
-   
 }
