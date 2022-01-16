@@ -200,6 +200,16 @@ module.exports = {
         module: "",
         protected: "INSERT"
     },
+    SP_SEL_CLIENTS: {
+        query: "CALL SP_SEL_CLIENTS($orgid, $userid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_STORES: {
+        query: "CALL SP_SEL_STORES($orgid, $userid, $clientid, $storeid, $all)",
+        module: "",
+        protected: false
+    },
 
 
 
