@@ -215,4 +215,9 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_ORGUSER: {
+        query: "CALL SP_SEL_ORGUSER($corpid, $orgid, $userid)",
+        module: "",
+        protected: false
+    },
 }
