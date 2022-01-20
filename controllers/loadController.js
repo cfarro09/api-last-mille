@@ -43,7 +43,7 @@ exports.insert = async (req, res) => {
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
                 lasterror = getErrorCode(errors.INVALID_UBIGEO);
-                console.log(check_ubigeo)
+                console.log(item.department.toUpperCase(), item.district.toUpperCase(), item.province.toUpperCase())
                 throw 'error'
             }
 
