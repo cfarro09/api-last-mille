@@ -40,7 +40,7 @@ exports.insert = async (req, res) => {
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
                 lasterror = getErrorCode(errors.INVALID_UBIGEO);
-                throw `error en el ubigeo de la fila ${index + 1}`
+                throw `error en el ubigeo de la fila ${index + 1}, distrio ${item.district}, provincia ${item.province}, departamento ${item.department}`
             }
 
             if ('client_date' in item && !(item.client_date instanceof String)) {
