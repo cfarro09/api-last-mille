@@ -114,7 +114,7 @@ exports.insert = async (req, res) => {
                 transaction
             }).catch(err => {
                 lasterror = getErrorSeq(err);
-                throw 'error'
+                throw lasterror.message || 'error'
             });
         }))
 
