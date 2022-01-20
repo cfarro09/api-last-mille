@@ -28,8 +28,6 @@ exports.insert = async (req, res) => {
             transaction
         }).catch(err => getErrorSeq(err));
 
-        console.log(result)
-
         await Promise.all(data.map(async (item) => {
             
             const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
@@ -37,13 +35,11 @@ exports.insert = async (req, res) => {
                 bind: {department: item.department.toUpperCase(), district: item.district.toUpperCase(), province: item.province.toUpperCase()},
             }).catch(err => {
                 lasterror = getErrorSeq(err);
-                console.log(err)
                 throw 'error'
             });
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
                 lasterror = getErrorCode(errors.INVALID_UBIGEO);
-                console.log(item.department.toUpperCase(), item.district.toUpperCase(), item.province.toUpperCase())
                 throw 'error'
             }
 
@@ -118,7 +114,6 @@ exports.insert = async (req, res) => {
                 transaction
             }).catch(err => {
                 lasterror = getErrorSeq(err);
-                console.log(err)
                 throw 'error'
             });
         }))

@@ -285,7 +285,8 @@ exports.getErrorSeq = err => {
         success: false,
         error: true,
         rescode: 400,
-        code: errorstmp[codeError] || errorstmp.UNEXPECTED_DB_DBERROR
+        code: errorstmp[codeError] || errorstmp.UNEXPECTED_DB_DBERROR,
+        message: err.toString().replace("SequelizeDatabaseError: ", "")
     };
 };
 
