@@ -28,14 +28,14 @@ exports.insert = async (req, res) => {
             transaction
         }).catch(err => getErrorSeq(err));
 
-        await Promise.all(data.map(async (item) => {
+        await Promise.all(data.map(async (item, index) => {
             
             const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
                 type: QueryTypes.RAW,
                 bind: {department: item.department.toUpperCase(), district: item.district.toUpperCase(), province: item.province.toUpperCase()},
             }).catch(err => {
                 lasterror = getErrorSeq(err);
-                throw 'error'
+                throw `error en el ubigeo de la fila ${index + 1}`
             });
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
