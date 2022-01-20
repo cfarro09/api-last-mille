@@ -35,12 +35,12 @@ exports.insert = async (req, res) => {
                 bind: {department: item.department.toUpperCase(), district: item.district.toUpperCase(), province: item.province.toUpperCase()},
             }).catch(err => {
                 lasterror = getErrorSeq(err);
-                throw `error en el ubigeo de la fila ${index + 1}`
+                throw 'error'
             });
 
             if (!(check_ubigeo instanceof Array) || !check_ubigeo[0] instanceof Array || check_ubigeo[0].length === 0) {
                 lasterror = getErrorCode(errors.INVALID_UBIGEO);
-                throw 'error'
+                throw `error en el ubigeo de la fila ${index + 1}`
             }
 
             if ('client_date' in item && !(item.client_date instanceof String)) {
