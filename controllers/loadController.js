@@ -123,7 +123,7 @@ exports.insert = async (req, res) => {
     } catch (e) {
         console.log(e)
         await transaction.rollback();
-        return res.status(lasterror.rescode).json(lasterror);
+        return res.status(lasterror.rescode).json({...lasterror, message: lasterror.message || e});
     }
 }
 
