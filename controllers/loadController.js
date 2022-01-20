@@ -28,6 +28,8 @@ exports.insert = async (req, res) => {
             transaction
         }).catch(err => getErrorSeq(err));
 
+        console.log(result)
+
         await Promise.all(data.map(async (item) => {
             
             const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
