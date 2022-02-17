@@ -1,4 +1,45 @@
 module.exports = {
+    img_monitor: {
+        shippingorderid: {
+            column: "sod.shippingorderid"
+        },
+        guideid: {
+            column: "sod.guideid"
+        },
+        status: {
+            column: "sod.status"
+        },
+        guide_barcode: {
+            column: "sod.guide_barcode"
+        },
+        guide_number: {
+            column: "sod.guide_number"
+        },
+        vehicleid: {
+            column: "so.vehicleid"
+        },
+        fechafilter: {
+            column: "DATE_FORMAT(so.date_created, '%Y-%m-%d')"
+        },
+        plate_number: {
+            column: "vh.plate_number"
+        },
+        name: {
+            column: "pv.name"
+        },
+        providerid: {
+            column: "pv.providerid"
+        },
+        images_count: {
+            column: "(select count(guideimagesid) from guide_images where guideid = sod.guideid and shippingorderid = sod.shippingorderid)"
+        },
+        attempt: {
+            column: "gt.attempt"
+        },
+        type: {
+            column: "sod.type"
+        }
+    },
     inputretry: {
         numeroticket: {
             column: "co.ticketnum"

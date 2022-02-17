@@ -174,10 +174,10 @@ exports.generatefilter = (filters, origin, daterange, offset) => {
                                     where += ` and ${column} is not null`;
                                     break;
                                 case 'nocontains': case 'notcontains':
-                                    where += ` and ${column} not ilike '%${f.value}%'`;
+                                    where += ` and ${column} not like '%${f.value}%'`;
                                     break;
                                 case 'contains':
-                                    where += ` and ${column} ilike '%${f.value}%'`;
+                                    where += ` and ${column} like '%${f.value}%'`;
                                     break;
                                 case 'greater':
                                     where += ` and ${column} > ${f.value}`;

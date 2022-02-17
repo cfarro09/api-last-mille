@@ -220,4 +220,14 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_IMG_MONITOR: {
+        query: "CALL SP_SEL_IMG_MONITOR($orgid, $take, $skip, $where, $order, $startdate, $enddate, $userid)",
+        module: "",
+        protected: false
+    },
+    SP_SEL_IMG_MONITOR_COUNT: {
+        query: "CALL SP_SEL_IMG_MONITOR_COUNT($orgid, $where, $startdate, $enddate, $userid)",
+        module: "",
+        protected: false
+    },
 }

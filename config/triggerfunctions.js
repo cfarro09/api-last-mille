@@ -89,11 +89,11 @@ exports.getCollectionPagination = async (methodcollection, methodcount, data, pe
                 
                 const results = await Promise.all([
                     sequelize.query(queryCollectionCleaned, {
-                        type: QueryTypes.SELECT,
+                        type: QueryTypes.RAW,
                         bind: data
                     }),
                     sequelize.query(queryCountCleaned, {
-                        type: QueryTypes.SELECT,
+                        type: QueryTypes.RAW,
                         bind: data
                     })
                 ]).catch(err => getErrorSeq(err));
@@ -104,7 +104,7 @@ exports.getCollectionPagination = async (methodcollection, methodcount, data, pe
 
                 return {
                     data: results[0],
-                    count: results[1][0].p_totalrecords,
+                    count: results[1][0].count,
                     success: true,
                     message: null,
                     error: false
