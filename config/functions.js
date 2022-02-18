@@ -240,4 +240,9 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_CAMBIAR_ESTADO: {
+        query: "CALL SP_CAMBIAR_ESTADO($guideid, $status, $motive, $username)",
+        module: "",
+        protected: false
+    },
 }
