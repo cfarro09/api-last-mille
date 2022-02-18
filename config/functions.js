@@ -255,4 +255,14 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_INS_CLIENT: {
+        query: "CALL SP_INS_CLIENT($id, $corpid, $orgid, $name, $description, $doctype, $docnum, $status, $username, $operation)",
+        module: "",
+        protected: false
+    },
+    SP_INS_STORE: {
+        query: "CALL SP_INS_STORE($id, $clientid, $corpid, $orgid, $name, $description, $address, $status, $username, $operation)",
+        module: "",
+        protected: false
+    },
 }
