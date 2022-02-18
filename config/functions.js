@@ -250,5 +250,9 @@ module.exports = {
         module: "",
         protected: false
     },
-
+    SP_INS_TEMPLATE: {
+        query: "CALL SP_INS_TEMPLATE($id, $corpid, $orgid, $clientid, $storeid, $name, $description, $json_detail, $status, $username, $operation)",
+        module: "",
+        protected: false
+    },
 }
