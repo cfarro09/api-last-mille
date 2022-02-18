@@ -245,4 +245,10 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_MOTIVES: {
+        query: "CALL SP_SEL_MOTIVES()",
+        module: "",
+        protected: false
+    },
+
 }
