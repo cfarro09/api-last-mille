@@ -94,18 +94,19 @@ exports.insert = async (req, res) => {
             item.amount = item.amount || null;
             item.collect_time_range = item.collect_time_range || null;
             item.date_loaded = item.date_loaded || null;
+            item.linea = item.linea || null;
             
             let query = `
                 INSERT massive_load_detail(
                     massiveloadid, guide_number, seg_code, alt_code1, alt_code2, client_date, client_date2, client_barcode, client_dni, client_name, client_phone1, 
                     client_phone2, client_phone3, client_email, client_address, client_address_reference, coord_latitude, coord_longitude, ubigeo, department, district, province, 
                     sku_code, sku_description, sku_weight, sku_pieces, sku_brand, sku_size, box_code, delivery_type, contact_name, contact_phone, collect_time_range, payment_method,
-                    amount, status, createby, changeby
+                    amount, status, createby, changeby, linea
                 ) VALUES (
                     $massiveloadid, $guide_number, $seg_code, $alt_code1, $alt_code2, $client_date, $client_date2, $client_barcode, $client_dni, $client_name, $client_phone1,
                     $client_phone2, $client_phone3, $client_email, $client_address, $client_address_reference, $coord_latitude, $coord_longitude, $ubigeo, $department, $district, $province,
                     $sku_code, $sku_description, $sku_weight, $sku_pieces, $sku_brand, $sku_size, $box_code, $delivery_type, $contact_name, $contact_phone, $collect_time_range, $payment_method,
-                    $amount, $status, $createby, $changeby
+                    $amount, $status, $createby, $changeby, $linea
                 )
             ` 
             await sequelize.query(query, {
