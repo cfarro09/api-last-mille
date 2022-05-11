@@ -29,8 +29,14 @@ exports.insert = async (req, res) => {
         }).catch(err => getErrorSeq(err));
 
         await Promise.all(data.map(async (item, index) => {
+            const check_ubigeo_query = ''
+
+            if (loadtemplateid === 11)
+                check_ubigeo_query = 'SELECT * from ubigeo where LOWER(district) = $district limit 1';
+            else
+                check_ubigeo_query = 'SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1';
             
-            const check_ubigeo = await sequelize.query("SELECT * from ubigeo where LOWER(department) = $department and LOWER(province) = $province and LOWER(district) = $district limit 1", {
+            const check_ubigeo = await sequelize.query(check_ubigeo_query, {
                 type: QueryTypes.RAW,
                 bind: {department: item.department.toUpperCase(), district: item.district.toUpperCase(), province: item.province.toUpperCase()},
             }).catch(err => {
@@ -50,6 +56,10 @@ exports.insert = async (req, res) => {
             if ('client_date2' in item && !(item.client_date2 instanceof String)) {
                 item.client_date2 = new Date(Math.round((item.client_date2 - 25569)*86400*1000));
             }
+
+            // if ('client_date3' in item && !(item.client_date3 instanceof String)) {
+            //     item.client_date3 = new Date(Math.round((item.client_date3 - 25569)*86400*1000));
+            // }
 
             if (!item.guide_number) {
                 item.guide_number = item.seg_code;
