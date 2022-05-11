@@ -38,7 +38,7 @@ exports.insert = async (req, res) => {
             
             const check_ubigeo = await sequelize.query(check_ubigeo_query, {
                 type: QueryTypes.RAW,
-                bind: {department: item.department.toUpperCase() || '', district: item.district.toUpperCase(), province: item.province.toUpperCase() || ''},
+                bind: {department: (item.department) ? item.department.toUpperCase() : '', district: item.district.toUpperCase(), province: (item.province) ? item.province.toUpperCase() : ''},
             }).catch(err => {
                 lasterror = getErrorSeq(err);
                 throw 'error'
