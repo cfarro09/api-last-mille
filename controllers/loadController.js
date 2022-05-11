@@ -29,7 +29,7 @@ exports.insert = async (req, res) => {
         }).catch(err => getErrorSeq(err));
 
         await Promise.all(data.map(async (item, index) => {
-            const check_ubigeo_query = ''
+            let check_ubigeo_query = ''
 
             if (loadtemplateid === 11)
                 check_ubigeo_query = 'SELECT * from ubigeo where LOWER(district) = $district limit 1';
