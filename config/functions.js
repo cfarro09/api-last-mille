@@ -105,6 +105,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_REASIGNAR_ENVIO: {
+        query: "CALL SP_REASIGNAR_ENVIO($vehicleid, $driverid, $username, $shippingorderid)",
+        module: "",
+        protected: false
+    },
     SP_DEL_MASSIVE_LOAD: {
         query: "CALL SP_DEL_MASSIVE_LOAD($massiveloadid, $username)",
         module: "",
