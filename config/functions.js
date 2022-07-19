@@ -106,7 +106,7 @@ module.exports = {
         protected: false
     },
     SP_REASIGNAR_ENVIO: {
-        query: "CALL SP_REASIGNAR_ENVIO($vehicleid, $driverid, $username, $shippingorderid)",
+        query: "CALL SP_REASIGNAR_ENVIO($vehicleid, $driverid, $shippingorderid, $username)",
         module: "",
         protected: false
     },
