@@ -110,6 +110,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_SEL_SHIPPING_DETAIL: {
+        query: "CALL SP_SEL_SHIPPING_DETAIL($shippingorderid)",
+        module: "",
+        protected: false
+    },
     SP_DEL_MASSIVE_LOAD: {
         query: "CALL SP_DEL_MASSIVE_LOAD($massiveloadid, $username)",
         module: "",
