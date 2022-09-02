@@ -120,6 +120,11 @@ module.exports = {
         module: "",
         protected: false
     },
+    SP_DEL_GUIDE_IMAGE: {
+        query: "CALL SP_DEL_GUIDE_IMAGE($guideid, $shippingorderid, $url, $username)",
+        module: "",
+        protected: false
+    },
     SP_SEL_GUIDE_BY_BARCODE: {
         query: "CALL SP_SEL_GUIDE_BY_BARCODE($search, $filterBy, $userid, $orgid)",
         module: "",
